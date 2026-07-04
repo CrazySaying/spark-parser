@@ -1,0 +1,4 @@
+一个将spark输出的sparkprofile转化为markdown或json的工具
+初衷是更方便ai分析服务器的性能开销
+
+由claudecode+deepseekv4完成
