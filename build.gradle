@@ -37,13 +37,7 @@ tasks.named('build') {
     dependsOn shadowJar
 }
 
-// 只打 fat jar，不打包 tar/zip 发行版
-tasks.withType(CreateStartScripts).configureEach {
-    enabled = false
-}
-tasks.named('distZip').configure {
-    enabled = false
-}
-tasks.named('distTar').configure {
+// 只打 fat jar，关掉所有 tar/zip/startScripts 发行版任务
+tasks.matching { it.name.contains('Dist') || it.name.contains('Scripts') }.configureEach {
     enabled = false
 }
