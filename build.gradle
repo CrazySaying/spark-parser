@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id 'application'
     id 'com.gradleup.shadow' version '8.3.8'
 }
 
@@ -10,10 +9,6 @@ version = '1.0.0'
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
-}
-
-application {
-    mainClass = 'org.sparkparser.SparkParser'
 }
 
 repositories {
@@ -35,9 +30,4 @@ shadowJar {
 
 tasks.named('build') {
     dependsOn shadowJar
-}
-
-// 只打 fat jar，关掉所有 tar/zip/startScripts 发行版任务
-tasks.matching { it.name.contains('Dist') || it.name.contains('Scripts') }.configureEach {
-    enabled = false
 }
