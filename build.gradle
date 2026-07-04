@@ -36,3 +36,14 @@ shadowJar {
 tasks.named('build') {
     dependsOn shadowJar
 }
+
+// Gradle 9.x: application 插件的 dist/startScripts 任务必须显式声明依赖 shadowJar
+tasks.withType(CreateStartScripts).configureEach {
+    dependsOn shadowJar
+}
+tasks.named('distZip') {
+    dependsOn shadowJar
+}
+tasks.named('distTar') {
+    dependsOn shadowJar
+}
