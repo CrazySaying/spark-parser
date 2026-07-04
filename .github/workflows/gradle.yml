@@ -3,6 +3,7 @@ name: Build
 on:
   push:
     branches: [main]
+    tags: ['v*']
   pull_request:
     branches: [main]
 
@@ -35,3 +36,38 @@ jobs:
           name: spark-parser
           path: build/libs/spark-parser-*.jar
           if-no-files-found: error
+
+      # --- Rolling "latest" release, updated on every push to main ---
+      - name: Move nightly tag
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git tag -f nightly
+          git push -f origin nightly
+
+      - name: Update rolling release
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: nightly
+          name: Latest Build
+          body: |
+            每次 push 到 `main` 自动构建的最新版本。
+
+            > **Commit:** ${{ github.sha }}
+            > **Date:** ${{ github.event.head_commit.timestamp }}
+          files: build/libs/spark-parser-*.jar
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # --- Versioned release, triggered by v* tags ---
+      - name: Create versioned release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: spark-parser ${{ github.ref_name }}
+          files: build/libs/spark-parser-*.jar
+          generate_release_notes: true
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
